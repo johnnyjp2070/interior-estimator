@@ -1,0 +1,18 @@
+{
+  "name": "vibgyor",
+  "version": "1.0.0",
+  "description": "Estimator app for interior design business",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Johnson G",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.0.0",
+    "config": "^3.3.1",
+    "express": "^4.17.1",
+    "express-validator": "^6.5.0",
+    "mongoose": "^5.9.19"
+  }
+}
