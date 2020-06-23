@@ -1,0 +1,26 @@
+[
+  {
+    "kitchen_and_utility": {
+      "count": 0,
+      "kitchen": [300, 400, 500],
+      "accessories": 400,
+      "kitchen_loft": 500,
+      "utility": [600, 700, 800]
+    }
+  },
+  {
+    "kitchen_and_utility": {
+      "count": 1,
+      "kitchen": [300, 400, 500],
+      "accessories": 400,
+      "kitchen_loft": 500,
+      "utility": [600, 700, 800]
+    }
+  },
+  {
+    "dining": {
+      "crokery": 300,
+      "bar_unit": 400
+    }
+  }
+]
