@@ -1,13 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import auth from "../services/authService";
-
+import Spinner from "./Spinner";
 const Login = ({ user }) => {
   const [credential, setCredential] = useState({
     username: "",
     password: "",
   });
-  //   const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState({});
+  const [usernameError, setUsernameError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [loading, setLoading] = useState(false);
   const { username, password } = credential;
+
+  const firstRender = useRef(true);
 
   const handleChange = (e) => {
     e.persist();
@@ -17,24 +22,64 @@ const Login = ({ user }) => {
     }));
   };
 
-  const handleSubmit = async (e) => {
+  const doSubmit = async (e) => {
     e.preventDefault();
-    await auth.login(username, password);
-    window.location = "/";
+    setLoading(true);
+    try {
+      await auth.login(username, password);
+      setLoading(false);
+      window.location = "/";
+    } catch (ex) {
+      setLoading(false);
+      if (ex.response && ex.response.status === 400) {
+        console.log(ex.response.data.errors);
+        setErrors({ ...errors, loginError: ex.response.data.errors });
+        setTimeout(() => {
+          const newError = [{ ...errors }];
+          delete newError.loginError;
+          setErrors(newError);
+        }, 3000);
+      }
+    }
   };
 
-  //   useEffect(() => {
-  //     console.log(user);
-  //     if (Object.keys(user).length === 0) {
-  //       window.location = "/";
-  //     }
-  //   });
+  useEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false;
+      return;
+    }
+
+    const validateUsername = () => {
+      if (
+        username === "" ||
+        !/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(username)
+      ) {
+        setUsernameError("Enter a valid email");
+      } else {
+        setUsernameError("");
+      }
+    };
+
+    const validatePassword = () => {
+      if (password === "") {
+        setPasswordError("Please enter a valid Password");
+      } else {
+        setPasswordError("");
+      }
+    };
+
+    validateUsername();
+    validatePassword();
+    return () => {
+      // do something with dependency
+    };
+  }, [username, password]);
 
   return (
     <div className='contact mt-header'>
       <div className='row p-0 m-0 align-items-center justify-content-center'>
-        <div className='col-md-6 mt-5 d-flex align-items-center justify-content-center'>
-          <form className='php-email-form' onSubmit={(e) => handleSubmit(e)}>
+        <div className='col-md-6 mt-5 d-flex align-items-center justify-content-center flex-column'>
+          <form className='php-email-form' onSubmit={doSubmit}>
             <p></p>
             <div className='form-group'>
               <label htmlFor='username'>Your Email</label>
@@ -46,6 +91,9 @@ const Login = ({ user }) => {
                 onChange={(e) => handleChange(e)}
                 value={username}
               />
+              {usernameError && (
+                <p className='alert alert-danger'> {usernameError}</p>
+              )}
             </div>
             <div className='form-group'>
               <label htmlFor='password'>Password</label>
@@ -56,7 +104,11 @@ const Login = ({ user }) => {
                 id='password'
                 onChange={(e) => handleChange(e)}
                 value={password}
+                autoComplete='on'
               />
+              {passwordError && (
+                <p className='alert alert-danger'> {passwordError}</p>
+              )}
             </div>
             <div className='text-center'>
               <button type='submit' className='btn btn-primary'>
@@ -64,6 +116,19 @@ const Login = ({ user }) => {
               </button>
             </div>
           </form>
+
+          {loading ? (
+            <Spinner></Spinner>
+          ) : (
+            <ul className='list-style-none mt-3'>
+              {errors.loginError &&
+                errors.loginError.map((error, i) => (
+                  <li key={i} className='alert alert-danger'>
+                    {error.msg}
+                  </li>
+                ))}
+            </ul>
+          )}
         </div>
       </div>
     </div>

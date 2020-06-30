@@ -1,14 +1,20 @@
 import React, { Fragment, useState, useEffect } from "react";
-import Landing from "./components/Landing";
-import NavBar from "./components/NavBar";
 import {
   BrowserRouter as Router,
   Switch,
   Route,
   Redirect,
 } from "react-router-dom";
+
+// Importing Components
+
+import Landing from "./components/Landing";
+import NavBar from "./components/NavBar";
+import InitialEstimator from "./components/InitialEstimator";
 import About from "./components/About";
 import Login from "./components/Login";
+
+// Importing Services
 import auth from "./services/authService";
 
 function App() {
@@ -41,6 +47,13 @@ function App() {
               <Redirect to='/'></Redirect>
             ) : (
               <Login user={currentUser}></Login>
+            )}
+          </Route>
+          <Route path='/initial-estimator' exact>
+            {Object.keys(currentUser).length !== 0 ? (
+              <InitialEstimator></InitialEstimator>
+            ) : (
+              <Redirect to='/login'></Redirect>
             )}
           </Route>
         </Switch>

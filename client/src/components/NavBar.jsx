@@ -3,9 +3,6 @@ import { Link } from "react-router-dom";
 import auth from "../services/authService";
 
 const NavBar = ({ user }) => {
-  console.log(user);
-  console.log(user.length);
-
   const handleLogout = () => {
     console.log("Logout Clicked");
     auth.logout();
@@ -43,8 +40,10 @@ const NavBar = ({ user }) => {
                 <li>
                   <Link to='/dashboard'>{user.name}</Link>
                 </li>
-                <li>
-                  <a onClick={handleLogout}>Logout</a>
+                <li className='pointer'>
+                  <a onClick={handleLogout} href='#!'>
+                    Logout
+                  </a>
                 </li>
               </Fragment>
             )}
